@@ -1,0 +1,16 @@
+.todo-container {
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.todo-form {
+  width: 100vh;
+}
+.todo-input {
+  padding: 10px;
+}
+.todo-input .todo-text {
+  padding: 200vh;
+}
