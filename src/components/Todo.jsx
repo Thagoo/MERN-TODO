@@ -1,26 +1,29 @@
 import React, { useState } from "react";
 import "./style.css";
-import { Button, TextField, Slide } from "@mui/material/";
+import { Button, TextField, Slide, Fade } from "@mui/material/";
 import AddIcon from "@mui/icons-material/Add";
 
 function Todo() {
   const [show, setShow] = useState(false);
+  const [close, setClose] = useState(true);
   const handleChange = () => {
     setShow(true);
+    setClose(false);
   };
   return (
     <div className="todo-container">
-      <div className="items">
-        <h1>Welcome to MERN-TODO</h1>
-      </div>
-      <div className="todo-btn">
-        <Button size="large" variant="contained" onClick={handleChange}>
-          Add TODO <AddIcon style={{ paddingLeft: `10px` }} />
-        </Button>
-      </div>
+      <Slide in={close}>
+        <div className="items">
+          <h1>Welcome to MERN-TODO</h1>
+          <Button size="large" variant="contained" onClick={handleChange}>
+            Add TODO <AddIcon style={{ paddingLeft: `10px` }} />
+          </Button>
+        </div>
+      </Slide>
       <Slide direction="up" in={show} mountOnEnter>
         <form action="">
           <div className="todo-form">
+            <h1> MERN-TODO</h1>
             <div className="todo-input">
               <TextField
                 required
@@ -39,6 +42,9 @@ function Todo() {
                 rows={8}
               />
             </div>
+            <Button size="large" variant="contained" onClick={handleChange}>
+              Submit
+            </Button>
           </div>
         </form>
       </Slide>
