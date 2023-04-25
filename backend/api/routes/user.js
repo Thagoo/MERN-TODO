@@ -1,14 +1,10 @@
 import express from "express";
-import {
-  addUser,
-  updateUser,
-  deleteUser,
-} from "#backend/api/controllers/user.js";
+import verifyToken from "#backend/api/utils/verifyToken.js";
+import { updateUser, deleteUser } from "#backend/api/controllers/user.js";
 
 const router = express.Router();
 
-router.post("/", addUser);
-router.put("/", updateUser);
-router.delete("/", deleteUser);
+router.put("/", verifyToken, updateUser);
+router.delete("/", verifyToken, deleteUser);
 
 export default router;

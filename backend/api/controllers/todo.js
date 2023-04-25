@@ -3,8 +3,8 @@ import Todo from "#backend/models/Todo.js";
 
 const router = express.Router();
 
-export const getTodo = async (req, res) => {
-  await Todo.find()
+export const getTodo = async (req, res, next) => {
+  await Todo.findOne({ user: req.params.id })
     .then((ret) => {
       console.log("Todo List get request");
       res.status(200).json(ret);
@@ -39,7 +39,7 @@ export const updateTodo = async (req, res) => {
       res.status(500).json(error);
     });
 };
-export const addTodo = async (req, res) => {
+export const addTodo = async (req, res, next) => {
   console.log(req.body);
   const newTodo = Todo(req.body);
   await newTodo
