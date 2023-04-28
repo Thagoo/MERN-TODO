@@ -7,10 +7,11 @@ import User from "#backend/models/User.js";
 const router = express.Router();
 
 export const registerUser = async (req, res) => {
+  console.log(req.body);
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      res.status(400).json("user already registered");
+      res.status(409).json("Email already registered");
       return;
     }
 
@@ -18,8 +19,7 @@ export const registerUser = async (req, res) => {
     req.body.password = passwordHashed;
     const newUser = User(req.body);
     const response = await newUser.save();
-    console.log("new user registered", response);
-    res.status(200).json("ok");
+    res.status(200).json("User successfully registered, please login");
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -30,12 +30,12 @@ export const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
-      res.status(404).json("user not found");
+      res.status(404).json("Email not found");
       return;
     }
     bcrypt.compare(password, user.password).then((authenticated) => {
       if (!authenticated) {
-        res.status(400).json("user password do not match");
+        res.status(400).json("Wrong password, try again");
         return;
       }
       const token = jwt.sign({ id: user._id }, process.env.JWT);
