@@ -33,19 +33,27 @@ export const loginUser = async (req, res) => {
       res.status(404).json("Email not found");
       return;
     }
-    bcrypt.compare(password, user.password).then((authenticated) => {
-      if (!authenticated) {
-        res.status(400).json("Wrong password, try again");
-        return;
-      }
-      const token = jwt.sign({ id: user._id }, process.env.JWT);
-      res
-        .cookie("access_token", token, { httpOnly: true })
-        .status(200)
-        .json("login successfull");
-    });
+
+    const authenticated = await bcrypt.compare(password, user.password);
+    if (!authenticated) {
+      res.status(400).json("Wrong password, try again");
+      return;
+    }
+    const token = await jwt.sign({ id: user._id }, process.env.JWT);
+
+    res
+      .cookie("access_token", token, { httpOnly: true })
+      .status(200)
+      .json("login successfull");
+    console.log("test");
   } catch (err) {
     console.log(err);
+    res.status(500);
   }
+};
+
+export const authorizeUser = async (req, res) => {
+  //If it passess the verifyToken middleware then return user is authenticated
+  return res.status(200).json("ok");
 };
 export default router;
