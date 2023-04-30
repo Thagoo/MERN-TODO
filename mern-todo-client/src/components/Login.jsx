@@ -58,8 +58,11 @@ function Login() {
 
   const onSubmit = async (data) => {
     setIsLoading("true");
+
     axios
-      .post("/api/auth/login", data)
+      .post("/api/auth/login", data, {
+        withCredentials: true,
+      })
       .then((response) => {
         if (response.status === 200) {
           setIsLoading(false);
@@ -167,7 +170,7 @@ function Login() {
                 variant="contained"
                 sx={{ mt: 4, mb: 1 }}
               >
-                Sign Up
+                Sign In
               </Button>
               <Grid container>
                 <Grid item xs>
