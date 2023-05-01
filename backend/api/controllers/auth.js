@@ -51,6 +51,10 @@ export const loginUser = async (req, res) => {
     res.status(500);
   }
 };
+export const logoutUser = async (req, res) => {
+  res.clearCookie("access_token", { httpOnly: true });
+  res.status(200).send("Logged out successfully");
+};
 
 export const authorizeUser = async (req, res) => {
   //If it passess the verifyToken middleware then return user is authenticated

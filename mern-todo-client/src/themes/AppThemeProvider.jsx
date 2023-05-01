@@ -35,6 +35,16 @@ const theme = createTheme({
         underline: `none`,
       },
     },
+    MuiAppBar: {
+      defaultProps: {
+        sx: {
+          px: "10px",
+          "@media (min-width: 600px)": {
+            px: "80px",
+          },
+        },
+      },
+    },
   },
 });
 const AppThemeProvider = (props) => {
