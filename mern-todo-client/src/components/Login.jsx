@@ -66,6 +66,7 @@ function Login() {
       .then((response) => {
         if (response.status === 200) {
           setIsLoading(false);
+          window.location.reload();
         }
       })
       .catch((error) => {
