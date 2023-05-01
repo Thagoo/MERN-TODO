@@ -177,7 +177,7 @@ function Signup() {
                       onClick={handleShowPassword}
                       edge="end"
                     >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}{" "}
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   ),
                 }}
@@ -194,10 +194,6 @@ function Signup() {
                 autoComplete="confirmPassword"
                 {...register("confirmPassword")}
                 autoFocus
-              />
-              <FormControlLabel
-                control={<Checkbox value="remeber" color="primary" />}
-                label="Remeber me"
               />
               <Button
                 type="submit"

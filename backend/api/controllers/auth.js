@@ -26,7 +26,7 @@ export const registerUser = async (req, res) => {
   }
 };
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, remember } = req.body;
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
@@ -43,9 +43,9 @@ export const loginUser = async (req, res) => {
 
     res
       .cookie("access_token", token, { httpOnly: true })
+      .cookie("remember", remember)
       .status(200)
       .json("login successfull");
-    console.log("test");
   } catch (err) {
     console.log(err);
     res.status(500);
@@ -53,6 +53,7 @@ export const loginUser = async (req, res) => {
 };
 export const logoutUser = async (req, res) => {
   res.clearCookie("access_token", { httpOnly: true });
+  res.clearCookie("remember");
   res.status(200).send("Logged out successfully");
 };
 

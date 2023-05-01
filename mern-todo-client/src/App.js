@@ -13,9 +13,16 @@ import Loading from "components/Loading";
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const remember = document.cookie
+    .split(";")
+    .find((cookie) => cookie.trim().startsWith("remember="));
+  const rememberValue = remember ? remember.split("=")[1] : null;
 
   const authorization = async () => {
     try {
+      if (rememberValue && rememberValue === "false") {
+        await axios.post("/api/auth/logout");
+      }
       const response = await axios.get("/api/auth/authorize");
       if (response.status === 200) {
         setAuthenticated(true);
@@ -28,7 +35,7 @@ function App() {
 
   useEffect(() => {
     authorization();
-  });
+  }, []);
 
   if (isLoading) {
     return (
@@ -62,7 +69,7 @@ function App() {
             path="/login"
             element={
               <PublicRoute authenticated={authenticated}>
-                <Login />
+                <Login setAuthenticated={setAuthenticated} />
               </PublicRoute>
             }
           />

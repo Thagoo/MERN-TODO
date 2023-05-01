@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   Grid,
@@ -25,26 +26,23 @@ import Footer from "components/Footer";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-const schema = yup
-  .object({
-    email: yup
-      .string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    password: yup
-      .string()
-      .min(4, "Mininum 4 characters")
-      .max(10, "Maximum 10 characters")
+const schema = yup.object({
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: yup
+    .string()
+    .min(4, "Mininum 4 characters")
+    .max(10, "Maximum 10 characters")
+    .required(),
+});
 
-      .required(),
-  })
-  .required();
-
-function Login() {
+function Login({ setAuthenticated }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
@@ -58,7 +56,6 @@ function Login() {
 
   const onSubmit = async (data) => {
     setIsLoading("true");
-
     axios
       .post("/api/auth/login", data, {
         withCredentials: true,
@@ -66,7 +63,8 @@ function Login() {
       .then((response) => {
         if (response.status === 200) {
           setIsLoading(false);
-          window.location.reload();
+          setAuthenticated(true);
+          navigate("/");
         }
       })
       .catch((error) => {
@@ -130,6 +128,7 @@ function Login() {
                 sx={{ mt: 4 }}
                 fullWidth
                 id="email"
+                name="email"
                 label="Email"
                 autoComplete="email"
                 autoFocus
@@ -154,7 +153,7 @@ function Login() {
                       onClick={handleShowPassword}
                       edge="end"
                     >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}{" "}
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   ),
                 }}
@@ -162,14 +161,22 @@ function Login() {
               />
 
               <FormControlLabel
-                control={<Checkbox value="remeber" color="primary" />}
+                sx={{ mt: 1 }}
+                control={
+                  <Checkbox
+                    {...register("remember")}
+                    defaultChecked
+                    color="primary"
+                  />
+                }
                 label="Remeber me"
               />
+
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 4, mb: 1 }}
+                sx={{ mt: 2, mb: 1 }}
               >
                 Sign In
               </Button>
