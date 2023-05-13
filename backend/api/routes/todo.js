@@ -9,9 +9,10 @@ import verifyToken from "#backend/api/utils/verifyToken.js";
 
 const router = express.Router();
 
-router.get("/:id", verifyToken, getTodo);
-router.delete("/:id", verifyToken, deleteTodo);
-router.put("/:id", verifyToken, updateTodo);
+//Todo CRUD by user id
+router.get("/", verifyToken, getTodo);
+router.delete("/", verifyToken, deleteTodo);
+router.put("/", verifyToken, updateTodo);
 router.post("/", verifyToken, addTodo);
 
 export default router;

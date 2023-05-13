@@ -7,7 +7,6 @@ import User from "#backend/models/User.js";
 const router = express.Router();
 
 export const registerUser = async (req, res) => {
-  console.log(req.body);
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
@@ -44,6 +43,7 @@ export const loginUser = async (req, res) => {
     res
       .cookie("access_token", token, { httpOnly: true })
       .cookie("remember", remember)
+      .cookie("id", user._id)
       .status(200)
       .json("login successfull");
   } catch (err) {

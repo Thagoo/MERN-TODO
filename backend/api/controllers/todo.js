@@ -4,7 +4,7 @@ import Todo from "#backend/models/Todo.js";
 const router = express.Router();
 
 export const getTodo = async (req, res, next) => {
-  await Todo.findOne({ user: req.params.id })
+  await Todo.find({ user: req.cookies.id })
     .then((ret) => {
       console.log("Todo List get request");
       res.status(200).json(ret);
@@ -15,9 +15,7 @@ export const getTodo = async (req, res, next) => {
     });
 };
 export const deleteTodo = async (req, res) => {
-  console.log(req.params.id);
-
-  await Todo.findByIdAndDelete(req.params.id)
+  await Todo.findByIdAndDelete(req.query.id)
     .then((ret) => {
       console.log("Todo deleted", ret);
       res.status(200).json("ok");
@@ -28,8 +26,7 @@ export const deleteTodo = async (req, res) => {
     });
 };
 export const updateTodo = async (req, res) => {
-  console.log(req.body);
-  await Todo.findByIdAndUpdate({ _id: req.params.id }, req.body)
+  await Todo.findByIdAndUpdate({ _id: req.query.id }, { completed: true })
     .then((ret) => {
       console.log("Todo updated", ret);
       res.status(200).json("ok");
@@ -39,8 +36,8 @@ export const updateTodo = async (req, res) => {
       res.status(500).json(error);
     });
 };
-export const addTodo = async (req, res, next) => {
-  console.log(req.body);
+export const addTodo = async (req, res) => {
+  req.body.user = req.cookies.id;
   const newTodo = Todo(req.body);
   await newTodo
     .save()

@@ -7,24 +7,15 @@ const theme = createTheme({
     allVariants: {
       fontFamily: "Inter",
       textTransform: "none",
-      fontSize: 15,
     },
   },
-  palette: {
-    primary: {
-      main: purple[900],
-    },
-    secondary: {
-      main: grey[800],
-    },
-  },
+
   components: {
     MuiTypography: {
       defaultProps: {
         sx: {
           px: 1,
         },
-        variant: "subtitle2",
       },
     },
     MuiLink: {
