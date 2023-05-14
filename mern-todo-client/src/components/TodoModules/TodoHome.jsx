@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AppbarHeader from "components/AppbarHeader";
 import UserProfile from "./UserProfile";
-import { Grid, Paper } from "@mui/material";
-import TodoInput from "./TodoInput";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import TodoList from "./TodoList";
 import TodoComleted from "./TodoComleted";
 import axios from "axios";
@@ -17,13 +16,15 @@ function TodoHome(props) {
     try {
       const response = await axios.get(`/api/todo/`);
       if (response.status === 200) {
-        const todos = response.data.reverse();
+        const todos = response.data
+          .reverse()
+          .filter((todo) => todo.completed !== true);
+        setTodoList([...todos]);
+        const todosCompleted = response.data
+          .reverse()
+          .filter((todo) => todo.completed === true);
 
-        setTodoList([...todos.filter((todo) => todo.completed !== true)]);
-        setTodoListCompleted([
-          ...todos.filter((todo) => todo.completed === true),
-        ]);
-        console.log(todoListCompleted);
+        setTodoListCompleted([...todosCompleted]);
       }
     } catch (err) {
       console.log(err);
@@ -34,61 +35,22 @@ function TodoHome(props) {
   }, [fetch]);
 
   return (
-    <>
+    <Box sx={{ height: `100vh` }}>
       <AppbarHeader />
       <Grid
         container
         sx={{
-          p: 3,
-          bgcolor: `#F8F9FA`,
-          justifyContent: `center`,
+          pt: 3,
         }}
+        justifyContent="flex-start"
         spacing={1}
       >
-        <Grid item xs={12} sm={4} md={3} component={Paper}>
-          <UserProfile userDetails={props.userDetails} />
-        </Grid>
-        <Grid item xs={12} sm={4} md={5}>
-          <Grid
-            item
-            sx={{
-              ml: {
-                xs: `none`,
-                md: `4vh`,
-              },
+        <UserProfile userDetails={props.userDetails} />
 
-              height: `65vh `,
-              overflowY: "auto",
-              scrollbarWidth: "thin",
-              "&::-webkit-scrollbar": {
-                width: "0.4em",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "#f1f1f1",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#888",
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                background: "#555",
-              },
-            }}
-          >
-            <TodoList todoList={todoList} fetch={fetch} setFetch={setFetch} />
-          </Grid>
-
-          <Grid
-            item
-            component={Paper}
-            sx={{
-              p: `8px`,
-              position: `relative`,
-            }}
-          >
-            <TodoInput fetch={fetch} setFetch={setFetch} />
-          </Grid>
+        <Grid item xs={12} sm={4} md={6}>
+          <TodoList todoList={todoList} fetch={fetch} setFetch={setFetch} />
         </Grid>
-        <Grid item xs={12} sm={4} md={3} component={Paper}>
+        <Grid item xs={12} sm={4} md={3}>
           <TodoComleted
             todoListCompleted={todoListCompleted}
             fetch={fetch}
@@ -96,7 +58,7 @@ function TodoHome(props) {
           />
         </Grid>
       </Grid>
-    </>
+    </Box>
   );
 }
 

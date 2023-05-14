@@ -15,6 +15,18 @@ export const getTodo = async (req, res, next) => {
     });
 };
 export const deleteTodo = async (req, res) => {
+  if (req.query.id === `all`) {
+    await Todo.deleteMany({ completed: true })
+      .then((ret) => {
+        console.log("Todos deleted", ret);
+        res.status(200).json("ok");
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json(error);
+      });
+    return;
+  }
   await Todo.findByIdAndDelete(req.query.id)
     .then((ret) => {
       console.log("Todo deleted", ret);

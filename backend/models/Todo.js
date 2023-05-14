@@ -13,7 +13,6 @@ const todoSchema = new mongoose.Schema({
   },
   time: {
     type: Date,
-    default: Date.now,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
