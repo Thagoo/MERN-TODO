@@ -20,15 +20,6 @@ function App() {
     .find((cookie) => cookie.trim().startsWith("remember="));
   const rememberValue = remember ? remember.split("=")[1] : null;
 
-  const getUserDetails = async () => {
-    try {
-      const response = await axios.post("/api/user/get-user");
-      setUserDetails(response.data);
-      //      localStorage.setItem("user", response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
   const authorization = async () => {
     try {
       if (rememberValue && rememberValue === "false") {
@@ -37,7 +28,6 @@ function App() {
       const response = await axios.get("/api/auth/authorize");
       if (response.status === 200) {
         setAuthenticated(true);
-        getUserDetails();
         setIsLoading(false);
       }
     } catch (err) {
@@ -47,6 +37,7 @@ function App() {
 
   useEffect(() => {
     authorization();
+    setUserDetails(JSON.parse(localStorage.getItem("user")));
   }, []);
 
   if (isLoading) {
@@ -56,6 +47,7 @@ function App() {
       </>
     );
   }
+
   return (
     <>
       <CssBaseline />
@@ -81,7 +73,10 @@ function App() {
             path="/login"
             element={
               <PublicRoute authenticated={authenticated}>
-                <Login setAuthenticated={setAuthenticated} />
+                <Login
+                  setAuthenticated={setAuthenticated}
+                  setUserDetails={setUserDetails}
+                />
               </PublicRoute>
             }
           />

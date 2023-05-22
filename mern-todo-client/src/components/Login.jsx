@@ -38,7 +38,7 @@ const schema = yup.object({
     .required(),
 });
 
-function Login({ setAuthenticated }) {
+function Login({ setAuthenticated, setUserDetails }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -54,6 +54,15 @@ function Login({ setAuthenticated }) {
 
   const handleShowPassword = () => setShowPassword((show) => !show);
 
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.post("/api/user/get-user");
+      localStorage.setItem("user", JSON.stringify(response.data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const onSubmit = async (data) => {
     setIsLoading("true");
     axios
@@ -62,9 +71,10 @@ function Login({ setAuthenticated }) {
       })
       .then((response) => {
         if (response.status === 200) {
+          getUserDetails();
           setIsLoading(false);
           setAuthenticated(true);
-          navigate("/");
+          navigate("/", { replace: true });
         }
       })
       .catch((error) => {
