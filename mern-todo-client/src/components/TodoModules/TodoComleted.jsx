@@ -5,6 +5,7 @@ import {
   Divider,
   IconButton,
   InputBase,
+  Tooltip,
   Typography,
   Slide,
   Box,
@@ -21,7 +22,9 @@ import { TransitionGroup } from "react-transition-group";
 
 function TodoCompleted({ todoListCompleted, fetch, setFetch }) {
   const handleDeleteAll = async () => {
-    const response = await axios.delete("/api/todo?id=all");
+    const response = await axios.delete("/api/todo", {
+      params: { id: "all", completed: true },
+    });
     if (response.status === 200) {
       setFetch(!fetch);
     }
@@ -37,17 +40,16 @@ function TodoCompleted({ todoListCompleted, fetch, setFetch }) {
     <>
       <ListItem
         secondaryAction={
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            title="Delete All"
-            sx={{
-              mr: `3px`,
-            }}
-            onClick={handleDeleteAll}
-          >
-            <DeleteOutlineIcon />
-          </IconButton>
+          <Tooltip title="Delete All" placement="top">
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              title="Delete"
+              onClick={() => handleDeleteAll()}
+            >
+              <DeleteOutlineIcon />
+            </IconButton>
+          </Tooltip>
         }
       >
         <Typography variant="h5" p={2}>

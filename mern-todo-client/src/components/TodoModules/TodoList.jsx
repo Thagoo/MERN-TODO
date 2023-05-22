@@ -11,8 +11,12 @@ import {
   Collapse,
   List,
   ListItem,
+  Typography,
   ListItemText,
+  ListItemButton,
+  Tooltip,
 } from "@mui/material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { TransitionGroup } from "react-transition-group";
@@ -35,10 +39,18 @@ function getTimeElapsed(dateTimeString) {
   }
 }
 function TodoList({ todoList, fetch, setFetch }) {
-  const containerRef = useRef(null);
+  const checkboxRef = useRef([]);
 
   const handleDelete = async (id) => {
     const response = await axios.delete(`/api/todo?id=${id}`);
+    if (response.status === 200) {
+      setFetch(!fetch);
+    }
+  };
+  const handleDeleteAll = async () => {
+    const response = await axios.delete("/api/todo", {
+      params: { id: "all", completed: false },
+    });
     if (response.status === 200) {
       setFetch(!fetch);
     }
@@ -55,12 +67,16 @@ function TodoList({ todoList, fetch, setFetch }) {
       console.log(err);
     }
   };
+  const handleListItemClick = (i) => {
+    checkboxRef.current[i].click();
+  };
 
   return (
     <>
-      <Paper ref={containerRef} variant="outlined" elevation={0}>
+      <Paper variant="outlined" elevation={0}>
         <center>
           <TodoInput fetch={fetch} setFetch={setFetch} />
+
           <Box
             sx={{
               pb: `2vh`,
@@ -84,10 +100,36 @@ function TodoList({ todoList, fetch, setFetch }) {
           >
             {todoList[0] ? (
               <List>
+                <ListItem
+                  secondaryAction={
+                    <>
+                      <Tooltip title="Delete All" placement="top">
+                        <IconButton
+                          sx={{ mb: 2 }}
+                          edge="end"
+                          aria-label="delete"
+                          title="Delete"
+                          onClick={() => handleDeleteAll()}
+                        >
+                          <DeleteOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  }
+                  sx={{
+                    ml: `10px`,
+                    mt: `2px`,
+                    mr: `10px`,
+                    width: `auto`,
+                  }}
+                >
+                  <ListItemText primary="" />
+                </ListItem>
                 <TransitionGroup>
                   {todoList.map((todo, i) => (
-                    <Collapse>
-                      <ListItem
+                    <Collapse key={i} in={false} collapsedHeight="0px">
+                      <ListItemButton
+                        onClick={() => handleListItemClick(i)}
                         sx={{
                           ml: `10px`,
                           mt: `2px`,
@@ -96,26 +138,25 @@ function TodoList({ todoList, fetch, setFetch }) {
                           bgcolor: `#F0F0F0`,
                           borderRadius: `3px`,
                         }}
-                        secondaryAction={
-                          <>
-                            <IconButton
-                              edge="end"
-                              aria-label="delete"
-                              title="Delete"
-                              onClick={() => handleDelete(todo._id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </>
-                        }
                       >
                         <Checkbox
-                          key={i}
+                          ref={(ref) => (checkboxRef.current[i] = ref)}
                           sx={{ pt: 0, pb: 0 }}
-                          onChange={(e) => handleComplete(e, todo._id)}
+                          onClick={(e) => {
+                            handleComplete(e, todo._id);
+                          }}
                         />
+
                         <ListItemText primary={todo.title} />
-                      </ListItem>
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          title="Delete"
+                          onClick={() => handleDelete(todo._id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemButton>
                     </Collapse>
                   ))}
                 </TransitionGroup>

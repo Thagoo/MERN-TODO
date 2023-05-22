@@ -57,10 +57,9 @@ function TodoInput({ fetch, setFetch }) {
           multiline
           maxRows={2}
           inputProps={{ maxLength: 63 }}
-          required
           reset
-          autofocus
           variant="standard"
+          required
         />
 
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
